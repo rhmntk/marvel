@@ -22,11 +22,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogFileReader {
 
+  private static final String DELIMITER = "\t";
+
   @Value("${marvel.logfile.path}")
   private String filePath;
   @Value("${marvel.logfile.filename}")
   private String fileName;
-  private static final String DELIMITER = "\t";
 
   private final HttpRequestLogMapper httpRequestLogMapper;
 

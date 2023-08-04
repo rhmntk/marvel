@@ -16,10 +16,8 @@ public class HttpRequestLogMapper {
 
     log.debug("start mapping line {}", lines);
 
-    HttpRequestLog httpRequestLog;
-
     if (KO.name().equalsIgnoreCase(lines[6])) {
-      httpRequestLog = HttpRequestLog.builder()
+      return HttpRequestLog.builder()
           .logType(LogTypeEnum.getValue(lines[0]))
           .id(Integer.parseInt(lines[1]))
           .endpointName(lines[3])
@@ -28,9 +26,8 @@ public class HttpRequestLogMapper {
           .status(StatusEnum.getValue(lines[6]))
           .message(lines[7])
           .build();
-
     } else { // status is OK without any message
-      httpRequestLog = HttpRequestLog.builder()
+      return HttpRequestLog.builder()
           .logType(LogTypeEnum.getValue(lines[0]))
           .id(Integer.parseInt(lines[1]))
           .endpointName(lines[3])
@@ -39,7 +36,6 @@ public class HttpRequestLogMapper {
           .status(StatusEnum.getValue(lines[6]))
           .build();
     }
-    return httpRequestLog;
   }
 
 }
