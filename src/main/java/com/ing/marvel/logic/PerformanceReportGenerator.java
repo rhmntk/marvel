@@ -8,6 +8,7 @@ import com.ing.marvel.web.exeption.MarvelBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -48,15 +49,17 @@ public class PerformanceReportGenerator {
           .sorted()
           .collect(Collectors.toList()).stream().mapToDouble(Double::doubleValue).toArray();
 
+      //average
+      OptionalDouble averageStreams = httpRequestLogs.stream()
+          .filter(l -> l.getStatus() == StatusEnum.OK)
+          .mapToLong(l -> l.getEndTimestampInUnix() - l.getStartTimestampInUnix())
+          .average();
+
       endpointStatistics.add(EndpointStatistic.builder()
               .path(endpoint)
               .requestTotal(httpRequestLogs.size())
               .failedRequestTotal((int) httpRequestLogs.stream().filter(l -> l.getStatus() == StatusEnum.KO).count())
-              .responseTimeAverage(
-                  httpRequestLogs.stream()
-                  .filter(l -> l.getStatus() == StatusEnum.OK)
-                  .mapToLong(l -> l.getEndTimestampInUnix() - l.getStartTimestampInUnix())
-                  .average().getAsDouble())
+              .responseTimeAverage(averageStreams.isPresent() ? averageStreams.getAsDouble() : 0.0)
               .percentile95th(percentile.evaluate(orderedAndUniqueResponseTimeList, 95.0))
               .percentile99th(percentile.evaluate(orderedAndUniqueResponseTimeList, 99.0))
           .build());
