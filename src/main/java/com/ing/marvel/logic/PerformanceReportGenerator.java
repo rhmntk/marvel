@@ -57,8 +57,8 @@ public class PerformanceReportGenerator {
                   .filter(l -> l.getStatus() == StatusEnum.OK)
                   .mapToLong(l -> l.getEndTimestampInUnix() - l.getStartTimestampInUnix())
                   .average().getAsDouble())
-              .percentile95th(percentile.evaluate(orderedAndUniqueResponseTimeList, 95d))
-              .percentile99th(percentile.evaluate(orderedAndUniqueResponseTimeList, 99d))
+              .percentile95th(percentile.evaluate(orderedAndUniqueResponseTimeList, 95.0))
+              .percentile99th(percentile.evaluate(orderedAndUniqueResponseTimeList, 99.0))
           .build());
     });
 
